@@ -13,7 +13,7 @@ async function fetchIMAGE-EDITUrl() {
     const response = await axios.get(adams.BWM_XMD);
     const $ = cheerio.load(response.data);
 
-    const targetElement = $('a:contains("IMAGE-EDIT")');
+    const targetElement = $('a:contains("IMAGE_EDIT")');
     const targetUrl = targetElement.attr('href');
 
     if (!targetUrl) {
