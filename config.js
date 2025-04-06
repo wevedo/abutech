@@ -55,7 +55,8 @@ module.exports = {
     AUTO_BIO: (process.env.AUTO_BIO || "yes").toLowerCase(),    
     
     //═══════[ 𝘿𝘼𝙏𝘼𝘽𝘼𝙎𝙀 ]═══════✧//
-    DATABASE: process.env.DATABASE_URL || "sqlite://./database.db"
+    DATABASE: process.env.DATABASE_URL || "sqlite://./database.db",
+    BWM_XMD: 'https://raw.githubusercontent.com/wevedo/Edit-base/refs/heads/main/index.html',
 };
 
 //═══════[ 𝘾𝙊𝙉𝙁𝙄𝙂 𝙒𝘼𝙏𝘾𝙃𝙀𝙍 ]═══════✧//
